@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" id="metaDesc" content="Learn how to use Spendora — the grocery list and budget tracker app. Organize products by category, build shopping lists, and track your spending.">
+<!-- PASTE YOUR GOOGLE SEARCH CONSOLE VERIFICATION TAG BELOW THIS LINE -->
+
 <title id="pageTitle">How to Use Spendora — Grocery Budget App Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -147,6 +149,14 @@
 </style>
 </head>
 <body lang-active="en">
+
+<noscript>
+  <div style="padding:24px;max-width:700px;margin:0 auto;font-family:sans-serif;color:#fff;background:#0D2B1F;">
+    <h1>Spendora — Grocery List and Budget Tracker App</h1>
+    <p>Spendora is a free grocery list and budget tracker app for Android. Organize products by category, build shopping lists, track your spending, and catch shrinkflation with price history. No subscription — one-time payment for Premium. Fully offline and available in 7 languages.</p>
+    <p><a href="https://play.google.com/store/apps/details?id=app.spendora" style="color:#C9A84C;">Download Spendora free on Google Play</a></p>
+  </div>
+</noscript>
 
 <nav>
   <span class="nav-logo display">SPENDORA</span>
@@ -557,10 +567,10 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Detect browser language on first load
+// Default to English on first load for consistent indexing by search engines.
+// Only switch if the visitor previously chose a different language themselves.
 const saved = localStorage.getItem('spendora_lang');
-const browserLang = navigator.language.slice(0,2);
-const initialLang = saved || (translations[browserLang] ? browserLang : 'en');
+const initialLang = saved && translations[saved] ? saved : 'en';
 applyLang(initialLang);
 </script>
 
