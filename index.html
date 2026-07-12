@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" id="metaDesc" content="Learn how to use Spendora — the grocery list and budget tracker app. Organize products by category, build shopping lists, and track your spending.">
+<title id="pageTitle">How to Use Spendora — Grocery Budget App Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --emerald: #0D2B1F; --emerald-mid: #143D2B; --emerald-light: #1C5038;
+    --gold: #C9A84C; --gold-light: #E2C06A; --white: #FFFFFF;
+    --white-80: rgba(255,255,255,0.80); --white-50: rgba(255,255,255,0.50);
+    --white-20: rgba(255,255,255,0.20); --white-08: rgba(255,255,255,0.08);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background:var(--emerald); color:var(--white);
+    font-family:'Inter','Noto Sans SC','Noto Sans JP','Noto Sans KR',sans-serif;
+    font-size:16px; line-height:1.6; overflow-x:hidden;
+  }
+  .display { font-family:'Bebas Neue','Noto Sans SC','Noto Sans JP','Noto Sans KR',sans-serif; }
+  [lang-active="ja"] .display, [lang-active="ko"] .display, [lang-active="zh"] .display {
+    font-weight: 900; letter-spacing: 0 !important;
+  }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    padding:16px 40px; display:flex; align-items:center; justify-content:space-between;
+    background:rgba(13,43,31,0.94); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--white-08);
+  }
+  .nav-logo { font-size:20px; letter-spacing:3px; color:var(--gold); text-decoration:none; }
+  .nav-right { display:flex; align-items:center; gap:20px; }
+  .lang-switch {
+    position:relative;
+  }
+  .lang-btn {
+    background:none; border:1px solid var(--white-20); color:var(--white-80);
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+    padding:8px 16px; border-radius:50px; cursor:pointer; display:flex;
+    align-items:center; gap:6px; transition:border-color 0.2s;
+  }
+  .lang-btn:hover { border-color:var(--gold); }
+  .lang-dropdown {
+    display:none; position:absolute; top:calc(100% + 8px); right:0;
+    background:var(--emerald-mid); border:1px solid var(--white-08);
+    border-radius:12px; padding:6px; min-width:160px; box-shadow:0 12px 32px rgba(0,0,0,0.4);
+  }
+  .lang-dropdown.open { display:block; }
+  .lang-option {
+    display:flex; align-items:center; gap:10px; width:100%; background:none; border:none;
+    color:var(--white-80); font-family:'Inter',sans-serif; font-size:13px; font-weight:500;
+    padding:10px 12px; border-radius:8px; cursor:pointer; text-align:left; transition:background 0.15s;
+  }
+  .lang-option:hover { background:var(--white-08); color:var(--white); }
+  .lang-option.active { color:var(--gold); font-weight:700; }
+  .nav-cta {
+    background:var(--gold); color:#000; padding:9px 20px; border-radius:50px;
+    font-weight:700; font-size:13px; text-decoration:none; white-space:nowrap;
+  }
+
+  /* HERO */
+  .hero {
+    min-height:78vh; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; text-align:center; padding:140px 24px 60px; position:relative;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-eyebrow { font-size:11px; letter-spacing:5px; color:var(--gold); margin-bottom:20px; }
+  .hero-title { font-size:clamp(38px,6vw,68px); line-height:1.02; margin-bottom:20px; max-width:820px; }
+  .hero-title .gold { color:var(--gold); }
+  .hero-sub { font-size:17px; color:var(--white-80); max-width:560px; margin-bottom:36px; line-height:1.65; }
+  .btn-primary {
+    display:inline-flex; align-items:center; gap:10px; background:var(--gold); color:#000;
+    font-weight:700; font-size:15px; padding:14px 32px; border-radius:50px; text-decoration:none;
+    transition:background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background:var(--gold-light); transform:translateY(-1px); }
+
+  /* STEP SECTIONS */
+  .step {
+    max-width:1100px; margin:0 auto; padding:90px 24px;
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;
+  }
+  .step.reverse .step-img { order:2; }
+  .step.reverse .step-text { order:1; }
+
+  .step-num {
+    font-size:13px; letter-spacing:4px; color:var(--gold); margin-bottom:16px; opacity:0.85;
+  }
+  .step-title {
+    font-size:clamp(28px,4vw,42px); line-height:1.05; margin-bottom:20px;
+  }
+  .step-desc { font-size:15px; color:var(--white-80); line-height:1.75; margin-bottom:20px; }
+  .step-desc + .step-desc { margin-top:-8px; }
+
+  .step-highlight {
+    background:var(--emerald-mid); border:1px solid var(--gold); border-radius:14px;
+    padding:22px 24px; margin-top:24px;
+  }
+  .step-highlight-label {
+    font-size:10px; letter-spacing:4px; color:var(--gold); margin-bottom:8px; display:block;
+  }
+  .step-highlight p { font-size:14px; color:var(--white-80); line-height:1.65; }
+
+  .step-img { display:flex; justify-content:center; }
+  .step-img img {
+    width:100%; max-width:300px; border-radius:24px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--white-08);
+  }
+
+  .divider { height:1px; background:var(--white-08); max-width:1100px; margin:0 auto; }
+
+  /* CTA FINAL */
+  .cta-final { padding:100px 24px; text-align:center; }
+  .cta-final-title { font-size:clamp(34px,5vw,56px); line-height:1.05; margin-bottom:20px; }
+  .cta-final-title .gold { color:var(--gold); }
+  .cta-final-sub { font-size:15px; color:var(--white-80); max-width:460px; margin:0 auto 36px; }
+
+  /* FOOTER */
+  footer {
+    border-top:1px solid var(--white-08); padding:36px 40px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+  }
+  .footer-logo { font-size:16px; letter-spacing:3px; color:var(--gold); }
+  .footer-links { display:flex; gap:22px; list-style:none; flex-wrap:wrap; }
+  .footer-links a { font-size:12px; color:var(--white-50); text-decoration:none; transition:color 0.2s; }
+  .footer-links a:hover { color:var(--gold); }
+  .footer-copy { font-size:12px; color:var(--white-50); }
+
+  @media (max-width:860px) {
+    .step { grid-template-columns:1fr; gap:32px; padding:60px 24px; }
+    .step.reverse .step-img { order:1; }
+    .step.reverse .step-text { order:2; }
+    nav { padding:14px 18px; }
+    .nav-cta { padding:8px 14px; font-size:12px; }
+  }
+
+  [data-i18n] { transition: opacity 0.15s; }
+</style>
+</head>
+<body lang-active="en">
+
+<nav>
+  <span class="nav-logo display">SPENDORA</span>
+  <div class="nav-right">
+    <div class="lang-switch">
+      <button class="lang-btn" id="langBtn">🌐 <span id="langBtnLabel">English</span> ▾</button>
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-option active" data-lang="en">🇬🇧 English</button>
+        <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+        <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+        <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+        <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+        <button class="lang-option" data-lang="zh">🇨🇳 简体中文</button>
+        <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+      </div>
+    </div>
+    <a href="https://play.google.com/store/apps/details?id=app.spendora" target="_blank" class="nav-cta" data-i18n="nav_cta">Download Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow" data-i18n="hero_eyebrow">HOW IT WORKS</p>
+  <h1 class="hero-title display" data-i18n="hero_title">Everything Spendora Does. <span class="gold">Explained Simply.</span></h1>
+  <p class="hero-sub" data-i18n="hero_sub">A quick visual guide to organizing products, building smarter shopping lists, and tracking your grocery budget with Spendora.</p>
+  <a href="https://play.google.com/store/apps/details?id=app.spendora" target="_blank" class="btn-primary" data-i18n="hero_cta">⬇ Download Spendora Free</a>
+</section>
+
+<div class="divider"></div>
+
+<!-- STEP 1: DASHBOARD -->
+<section class="step">
+  <div class="step-text">
+    <p class="step-num" data-i18n="s1_num">STEP 01</p>
+    <h2 class="step-title display" data-i18n="s1_title">Your Dashboard, At a Glance</h2>
+    <p class="step-desc" data-i18n="s1_desc1">The moment you open Spendora, you see exactly where you stand — your total spending this month, your average ticket per shop, and your running annual total.</p>
+    <p class="step-desc" data-i18n="s1_desc2">No digging through menus. No calculations. Just the numbers that matter, front and center.</p>
+  </div>
+  <div class="step-img"><img src="dashboard.jpg" alt="Spendora Dashboard"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STEP 2: CATALOG -->
+<section class="step reverse">
+  <div class="step-text">
+    <p class="step-num" data-i18n="s2_num">STEP 02</p>
+    <h2 class="step-title display" data-i18n="s2_title">Build Your Catalog by Category</h2>
+    <p class="step-desc" data-i18n="s2_desc1">Every product you add to Spendora is organized into a category — Bakery, Beverages, Dairy, Household, and more. Set the price once, and it's saved for every future list.</p>
+    <div class="step-highlight">
+      <span class="step-highlight-label" data-i18n="s2_highlight_label">WHY THIS MATTERS</span>
+      <p data-i18n="s2_highlight_text">Categorizing your products isn't just for organization — it's the foundation that makes your shopping lists work like a map of the store, not just a random list of items.</p>
+    </div>
+  </div>
+  <div class="step-img"><img src="catalog.jpg" alt="Spendora Catalog"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STEP 3: LISTS -->
+<section class="step">
+  <div class="step-text">
+    <p class="step-num" data-i18n="s3_num">STEP 03</p>
+    <h2 class="step-title display" data-i18n="s3_title">Shop by Category, Not by Chaos</h2>
+    <p class="step-desc" data-i18n="s3_desc1">Create a shopping list and select which products you need from your Catalog. Your Total Estimated updates instantly, so you always know what you're about to spend — before you reach the checkout.</p>
+    <div class="step-highlight">
+      <span class="step-highlight-label" data-i18n="s3_highlight_label">THE REAL ADVANTAGE — IN THE STORE</span>
+      <p data-i18n="s3_highlight_text">Because your products are already organized by category, you can filter your list by category while you shop — Bakery, Dairy, Beverages, Meat. These categories usually match the actual sections of the supermarket. Select a category and only the matching items appear, so you move through the store section by section instead of scrolling through your entire list looking for what's next.</p>
+    </div>
+  </div>
+  <div class="step-img"><img src="list.jpg" alt="Spendora Shopping List"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STEP 4: HISTORY -->
+<section class="step reverse">
+  <div class="step-text">
+    <p class="step-num" data-i18n="s4_num">STEP 04</p>
+    <h2 class="step-title display" data-i18n="s4_title">Every Trip, Automatically Saved</h2>
+    <p class="step-desc" data-i18n="s4_desc1">Once you finalize a list, it's saved to your Purchase History — with the store, the date, the number of products, and the total spent. Nothing to log manually.</p>
+    <p class="step-desc" data-i18n="s4_desc2">Over time, this history becomes your personal record of exactly how your grocery spending evolves — trip by trip, store by store.</p>
+  </div>
+  <div class="step-img"><img src="history.jpg" alt="Spendora Purchase History"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STEP 5: STATISTICS -->
+<section class="step">
+  <div class="step-text">
+    <p class="step-num" data-i18n="s5_num">STEP 05</p>
+    <h2 class="step-title display" data-i18n="s5_title">See Exactly Where Your Money Goes</h2>
+    <p class="step-desc" data-i18n="s5_desc1">Spendora turns your purchase history into clear, visual statistics — current month, calendar year, average ticket, and monthly spending trends over the last 12 months.</p>
+    <p class="step-desc" data-i18n="s5_desc2">No more guessing whether this month was expensive. The chart shows you, instantly.</p>
+  </div>
+  <div class="step-img"><img src="stats1.jpg" alt="Spendora Spending Analysis"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STEP 6: DISTRIBUTION -->
+<section class="step reverse">
+  <div class="step-text">
+    <p class="step-num" data-i18n="s6_num">STEP 06</p>
+    <h2 class="step-title display" data-i18n="s6_title">Compare Supermarkets, Compare Trends</h2>
+    <p class="step-desc" data-i18n="s6_desc1">See your cumulative spending evolve over time, and discover exactly how much of your budget goes to each supermarket you shop at — with a clear breakdown by store.</p>
+    <div class="step-highlight">
+      <span class="step-highlight-label" data-i18n="s6_highlight_label">USE THIS TO DECIDE</span>
+      <p data-i18n="s6_highlight_text">Once you see which store is consistently taking a bigger share of your budget, you can make an informed decision — is it worth it, or is it time to shift more of your shopping elsewhere?</p>
+    </div>
+  </div>
+  <div class="step-img"><img src="stats2.jpg" alt="Spendora Distribution by Supermarket"></div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2 class="cta-final-title display" data-i18n="cta_title">Simple to Start. <span class="gold">Powerful Over Time.</span></h2>
+  <p class="cta-final-sub" data-i18n="cta_sub">Download Spendora free and start organizing your first shopping list in under two minutes.</p>
+  <a href="https://play.google.com/store/apps/details?id=app.spendora" target="_blank" class="btn-primary" data-i18n="hero_cta">⬇ Download Spendora Free</a>
+</section>
+
+<footer>
+  <span class="footer-logo display">SPENDORA</span>
+  <ul class="footer-links">
+    <li><a href="index.html" data-i18n="footer_home">Home</a></li>
+    <li><a href="grocery-hacks.html" data-i18n="footer_hacks">Grocery Hacks</a></li>
+    <li><a href="https://mariolssilva84.github.io/Spensora-Privacy-Policy/" target="_blank" data-i18n="footer_privacy">Privacy Policy</a></li>
+  </ul>
+  <span class="footer-copy" data-i18n="footer_copy">© 2026 Spendora. All rights reserved.</span>
+</footer>
+
+<script>
+const translations = {
+  en: {
+    page_title: "How to Use Spendora — Grocery Budget App Guide",
+    meta_desc: "Learn how to use Spendora — the grocery list and budget tracker app. Organize products by category, build shopping lists, and track your spending.",
+    nav_cta: "Download Free",
+    hero_eyebrow: "HOW IT WORKS",
+    hero_title: 'Everything Spendora Does. <span class="gold">Explained Simply.</span>',
+    hero_sub: "A quick visual guide to organizing products, building smarter shopping lists, and tracking your grocery budget with Spendora.",
+    hero_cta: "⬇ Download Spendora Free",
+    s1_num: "STEP 01", s1_title: "Your Dashboard, At a Glance",
+    s1_desc1: "The moment you open Spendora, you see exactly where you stand — your total spending this month, your average ticket per shop, and your running annual total.",
+    s1_desc2: "No digging through menus. No calculations. Just the numbers that matter, front and center.",
+    s2_num: "STEP 02", s2_title: "Build Your Catalog by Category",
+    s2_desc1: "Every product you add to Spendora is organized into a category — Bakery, Beverages, Dairy, Household, and more. Set the price once, and it's saved for every future list.",
+    s2_highlight_label: "WHY THIS MATTERS",
+    s2_highlight_text: "Categorizing your products isn't just for organization — it's the foundation that makes your shopping lists work like a map of the store, not just a random list of items.",
+    s3_num: "STEP 03", s3_title: "Shop by Category, Not by Chaos",
+    s3_desc1: "Create a shopping list and select which products you need from your Catalog. Your Total Estimated updates instantly, so you always know what you're about to spend — before you reach the checkout.",
+    s3_highlight_label: "THE REAL ADVANTAGE — IN THE STORE",
+    s3_highlight_text: "Because your products are already organized by category, you can filter your list by category while you shop — Bakery, Dairy, Beverages, Meat. These categories usually match the actual sections of the supermarket. Select a category and only the matching items appear, so you move through the store section by section instead of scrolling through your entire list looking for what's next.",
+    s4_num: "STEP 04", s4_title: "Every Trip, Automatically Saved",
+    s4_desc1: "Once you finalize a list, it's saved to your Purchase History — with the store, the date, the number of products, and the total spent. Nothing to log manually.",
+    s4_desc2: "Over time, this history becomes your personal record of exactly how your grocery spending evolves — trip by trip, store by store.",
+    s5_num: "STEP 05", s5_title: "See Exactly Where Your Money Goes",
+    s5_desc1: "Spendora turns your purchase history into clear, visual statistics — current month, calendar year, average ticket, and monthly spending trends over the last 12 months.",
+    s5_desc2: "No more guessing whether this month was expensive. The chart shows you, instantly.",
+    s6_num: "STEP 06", s6_title: "Compare Supermarkets, Compare Trends",
+    s6_desc1: "See your cumulative spending evolve over time, and discover exactly how much of your budget goes to each supermarket you shop at — with a clear breakdown by store.",
+    s6_highlight_label: "USE THIS TO DECIDE",
+    s6_highlight_text: "Once you see which store is consistently taking a bigger share of your budget, you can make an informed decision — is it worth it, or is it time to shift more of your shopping elsewhere?",
+    cta_title: 'Simple to Start. <span class="gold">Powerful Over Time.</span>',
+    cta_sub: "Download Spendora free and start organizing your first shopping list in under two minutes.",
+    footer_home: "Home", footer_hacks: "Grocery Hacks", footer_privacy: "Privacy Policy",
+    footer_copy: "© 2026 Spendora. All rights reserved."
+  },
+  pt: {
+    page_title: "Como Usar a Spendora — Guia da App de Orçamento de Supermercado",
+    meta_desc: "Aprenda a usar a Spendora — a app de lista de compras e controlo de orçamento. Organize produtos por categoria, crie listas de compras e acompanhe os seus gastos.",
+    nav_cta: "Descarregar Grátis",
+    hero_eyebrow: "COMO FUNCIONA",
+    hero_title: 'Tudo o Que a Spendora Faz. <span class="gold">Explicado de Forma Simples.</span>',
+    hero_sub: "Um guia visual rápido para organizar produtos, criar listas de compras mais inteligentes e acompanhar o seu orçamento de supermercado com a Spendora.",
+    hero_cta: "⬇ Descarregar a Spendora Grátis",
+    s1_num: "PASSO 01", s1_title: "O Seu Dashboard, Num Relance",
+    s1_desc1: "No momento em que abre a Spendora, vê exactamente onde está — o total gasto este mês, o seu ticket médio por compra e o total anual acumulado.",
+    s1_desc2: "Sem procurar em menus. Sem cálculos. Apenas os números que importam, em destaque.",
+    s2_num: "PASSO 02", s2_title: "Crie o Seu Catálogo por Categoria",
+    s2_desc1: "Cada produto que adiciona à Spendora é organizado numa categoria — Padaria, Bebidas, Lacticínios, Casa, entre outras. Defina o preço uma vez e fica guardado para todas as listas futuras.",
+    s2_highlight_label: "PORQUE É QUE ISTO IMPORTA",
+    s2_highlight_text: "Categorizar os seus produtos não serve apenas para organização — é a base que faz com que as suas listas de compras funcionem como um mapa da loja, e não apenas uma lista aleatória de itens.",
+    s3_num: "PASSO 03", s3_title: "Faça Compras por Categoria, Não pelo Caos",
+    s3_desc1: "Crie uma lista de compras e seleccione os produtos que precisa a partir do seu Catálogo. O Total Estimado actualiza-se instantaneamente, para saber sempre quanto está prestes a gastar — antes de chegar à caixa.",
+    s3_highlight_label: "A VERDADEIRA VANTAGEM — NO SUPERMERCADO",
+    s3_highlight_text: "Como os seus produtos já estão organizados por categoria, pode filtrar a sua lista por categoria enquanto faz compras — Padaria, Lacticínios, Bebidas, Carnes. Estas categorias correspondem normalmente às secções reais do supermercado. Seleccione uma categoria e apenas os itens correspondentes aparecem, permitindo-lhe percorrer a loja secção a secção, em vez de percorrer toda a lista à procura do próximo item.",
+    s4_num: "PASSO 04", s4_title: "Cada Compra, Guardada Automaticamente",
+    s4_desc1: "Depois de finalizar uma lista, esta é guardada no seu Histórico de Compras — com o supermercado, a data, o número de produtos e o total gasto. Nada para registar manualmente.",
+    s4_desc2: "Com o tempo, este histórico torna-se o seu registo pessoal de como os seus gastos de supermercado evoluem — compra a compra, loja a loja.",
+    s5_num: "PASSO 05", s5_title: "Veja Exactamente Para Onde Vai o Seu Dinheiro",
+    s5_desc1: "A Spendora transforma o seu histórico de compras em estatísticas claras e visuais — mês actual, ano civil, ticket médio e tendências de gastos mensais dos últimos 12 meses.",
+    s5_desc2: "Chega de adivinhar se este mês foi caro. O gráfico mostra-lhe, instantaneamente.",
+    s6_num: "PASSO 06", s6_title: "Compare Supermercados, Compare Tendências",
+    s6_desc1: "Veja a evolução acumulada dos seus gastos ao longo do tempo e descubra exactamente quanto do seu orçamento vai para cada supermercado onde compra — com uma repartição clara por loja.",
+    s6_highlight_label: "USE ISTO PARA DECIDIR",
+    s6_highlight_text: "Assim que perceber qual a loja que consistentemente consome uma maior parte do seu orçamento, pode tomar uma decisão informada — vale a pena, ou é altura de deslocar mais das suas compras para outro lado?",
+    cta_title: 'Simples de Começar. <span class="gold">Poderosa ao Longo do Tempo.</span>',
+    cta_sub: "Descarregue a Spendora gratuitamente e comece a organizar a sua primeira lista de compras em menos de dois minutos.",
+    footer_home: "Início", footer_hacks: "Grocery Hacks", footer_privacy: "Política de Privacidade",
+    footer_copy: "© 2026 Spendora. Todos os direitos reservados."
+  },
+  es: {
+    page_title: "Cómo Usar Spendora — Guía de la App de Presupuesto de Supermercado",
+    meta_desc: "Aprende a usar Spendora — la app de lista de compras y control de presupuesto. Organiza productos por categoría, crea listas de compras y controla tus gastos.",
+    nav_cta: "Descargar Gratis",
+    hero_eyebrow: "CÓMO FUNCIONA",
+    hero_title: 'Todo Lo Que Hace Spendora. <span class="gold">Explicado de Forma Simple.</span>',
+    hero_sub: "Una guía visual rápida para organizar productos, crear listas de compras más inteligentes y controlar tu presupuesto de supermercado con Spendora.",
+    hero_cta: "⬇ Descargar Spendora Gratis",
+    s1_num: "PASO 01", s1_title: "Tu Panel, de un Vistazo",
+    s1_desc1: "En el momento en que abres Spendora, ves exactamente dónde estás — tu gasto total este mes, tu ticket medio por compra y tu total anual acumulado.",
+    s1_desc2: "Sin buscar en menús. Sin cálculos. Solo los números que importan, en primer plano.",
+    s2_num: "PASO 02", s2_title: "Crea Tu Catálogo por Categoría",
+    s2_desc1: "Cada producto que añades a Spendora se organiza en una categoría — Panadería, Bebidas, Lácteos, Hogar y más. Define el precio una vez y queda guardado para todas las listas futuras.",
+    s2_highlight_label: "POR QUÉ ES IMPORTANTE",
+    s2_highlight_text: "Categorizar tus productos no es solo para organizar — es la base que hace que tus listas de compras funcionen como un mapa de la tienda, no solo una lista aleatoria de artículos.",
+    s3_num: "PASO 03", s3_title: "Compra por Categoría, No por Caos",
+    s3_desc1: "Crea una lista de compras y selecciona los productos que necesitas desde tu Catálogo. Tu Total Estimado se actualiza al instante, para que siempre sepas cuánto estás a punto de gastar — antes de llegar a la caja.",
+    s3_highlight_label: "LA VENTAJA REAL — EN LA TIENDA",
+    s3_highlight_text: "Como tus productos ya están organizados por categoría, puedes filtrar tu lista por categoría mientras compras — Panadería, Lácteos, Bebidas, Carnes. Estas categorías suelen coincidir con las secciones reales del supermercado. Selecciona una categoría y solo aparecerán los artículos correspondientes, para que recorras la tienda sección por sección en lugar de desplazarte por toda la lista buscando lo siguiente.",
+    s4_num: "PASO 04", s4_title: "Cada Compra, Guardada Automáticamente",
+    s4_desc1: "Una vez que finalizas una lista, se guarda en tu Historial de Compras — con la tienda, la fecha, el número de productos y el total gastado. Nada que registrar manualmente.",
+    s4_desc2: "Con el tiempo, este historial se convierte en tu registro personal de cómo evoluciona tu gasto en supermercado — compra a compra, tienda a tienda.",
+    s5_num: "PASO 05", s5_title: "Ve Exactamente A Dónde Va Tu Dinero",
+    s5_desc1: "Spendora convierte tu historial de compras en estadísticas claras y visuales — mes actual, año natural, ticket medio y tendencias de gasto mensual de los últimos 12 meses.",
+    s5_desc2: "Se acabó adivinar si este mes fue caro. El gráfico te lo muestra, al instante.",
+    s6_num: "PASO 06", s6_title: "Compara Supermercados, Compara Tendencias",
+    s6_desc1: "Ve la evolución acumulada de tu gasto a lo largo del tiempo y descubre exactamente cuánto de tu presupuesto va a cada supermercado donde compras — con un desglose claro por tienda.",
+    s6_highlight_label: "USA ESTO PARA DECIDIR",
+    s6_highlight_text: "En cuanto veas qué tienda se lleva sistemáticamente una parte mayor de tu presupuesto, podrás tomar una decisión informada — ¿merece la pena, o es hora de trasladar más de tus compras a otro lugar?",
+    cta_title: 'Fácil de Empezar. <span class="gold">Poderosa con el Tiempo.</span>',
+    cta_sub: "Descarga Spendora gratis y empieza a organizar tu primera lista de compras en menos de dos minutos.",
+    footer_home: "Inicio", footer_hacks: "Grocery Hacks", footer_privacy: "Política de Privacidad",
+    footer_copy: "© 2026 Spendora. Todos los derechos reservados."
+  },
+  fr: {
+    page_title: "Comment Utiliser Spendora — Guide de l'App de Budget Courses",
+    meta_desc: "Apprenez à utiliser Spendora — l'application de liste de courses et de gestion de budget. Organisez vos produits par catégorie, créez des listes et suivez vos dépenses.",
+    nav_cta: "Télécharger Gratuitement",
+    hero_eyebrow: "COMMENT ÇA MARCHE",
+    hero_title: 'Tout Ce Que Fait Spendora. <span class="gold">Expliqué Simplement.</span>',
+    hero_sub: "Un guide visuel rapide pour organiser vos produits, créer des listes de courses plus intelligentes et suivre votre budget courses avec Spendora.",
+    hero_cta: "⬇ Télécharger Spendora Gratuitement",
+    s1_num: "ÉTAPE 01", s1_title: "Votre Tableau de Bord, en Un Coup d'Œil",
+    s1_desc1: "Dès que vous ouvrez Spendora, vous voyez exactement où vous en êtes — votre dépense totale ce mois-ci, votre ticket moyen par course, et votre total annuel cumulé.",
+    s1_desc2: "Pas besoin de fouiller dans les menus. Pas de calculs. Juste les chiffres qui comptent, mis en avant.",
+    s2_num: "ÉTAPE 02", s2_title: "Créez Votre Catalogue par Catégorie",
+    s2_desc1: "Chaque produit que vous ajoutez à Spendora est classé dans une catégorie — Boulangerie, Boissons, Produits laitiers, Maison, et plus encore. Définissez le prix une seule fois, il est enregistré pour toutes vos futures listes.",
+    s2_highlight_label: "POURQUOI C'EST IMPORTANT",
+    s2_highlight_text: "Catégoriser vos produits ne sert pas seulement à s'organiser — c'est la base qui permet à vos listes de courses de fonctionner comme un plan du magasin, et non comme une simple liste d'articles au hasard.",
+    s3_num: "ÉTAPE 03", s3_title: "Faites Vos Courses par Catégorie, Pas dans le Chaos",
+    s3_desc1: "Créez une liste de courses et sélectionnez les produits dont vous avez besoin depuis votre Catalogue. Votre Total Estimé se met à jour instantanément, pour toujours savoir combien vous allez dépenser — avant d'arriver en caisse.",
+    s3_highlight_label: "L'AVANTAGE RÉEL — EN MAGASIN",
+    s3_highlight_text: "Comme vos produits sont déjà organisés par catégorie, vous pouvez filtrer votre liste par catégorie pendant vos courses — Boulangerie, Produits laitiers, Boissons, Viandes. Ces catégories correspondent généralement aux rayons réels du supermarché. Sélectionnez une catégorie et seuls les articles correspondants s'affichent, pour parcourir le magasin rayon par rayon plutôt que de faire défiler toute la liste à la recherche du prochain article.",
+    s4_num: "ÉTAPE 04", s4_title: "Chaque Course, Enregistrée Automatiquement",
+    s4_desc1: "Une fois votre liste finalisée, elle est enregistrée dans votre Historique d'Achats — avec le magasin, la date, le nombre de produits et le total dépensé. Rien à noter manuellement.",
+    s4_desc2: "Au fil du temps, cet historique devient votre registre personnel de l'évolution de vos dépenses de courses — course après course, magasin après magasin.",
+    s5_num: "ÉTAPE 05", s5_title: "Voyez Exactement Où Va Votre Argent",
+    s5_desc1: "Spendora transforme votre historique d'achats en statistiques claires et visuelles — mois en cours, année civile, ticket moyen et tendances de dépenses mensuelles sur les 12 derniers mois.",
+    s5_desc2: "Fini de deviner si ce mois a été cher. Le graphique vous le montre, instantanément.",
+    s6_num: "ÉTAPE 06", s6_title: "Comparez les Supermarchés, Comparez les Tendances",
+    s6_desc1: "Visualisez l'évolution cumulée de vos dépenses dans le temps, et découvrez exactement quelle part de votre budget va à chaque supermarché où vous faites vos courses — avec une répartition claire par magasin.",
+    s6_highlight_label: "UTILISEZ CECI POUR DÉCIDER",
+    s6_highlight_text: "Dès que vous voyez quel magasin prend systématiquement une plus grande part de votre budget, vous pouvez prendre une décision éclairée — cela en vaut-il la peine, ou est-il temps de déplacer une partie de vos achats ailleurs ?",
+    cta_title: 'Simple à Démarrer. <span class="gold">Puissante avec le Temps.</span>',
+    cta_sub: "Téléchargez Spendora gratuitement et commencez à organiser votre première liste de courses en moins de deux minutes.",
+    footer_home: "Accueil", footer_hacks: "Grocery Hacks", footer_privacy: "Politique de Confidentialité",
+    footer_copy: "© 2026 Spendora. Tous droits réservés."
+  },
+  ja: {
+    page_title: "Spendoraの使い方 — 食料品予算アプリガイド",
+    meta_desc: "Spendoraの使い方を学びましょう。食料品リストと予算管理アプリです。商品をカテゴリー別に整理し、買い物リストを作成し、支出を追跡できます。",
+    nav_cta: "無料ダウンロード",
+    hero_eyebrow: "使い方",
+    hero_title: 'Spendoraでできること。<span class="gold">わかりやすく解説。</span>',
+    hero_sub: "商品の整理、賢い買い物リストの作成、食料品予算の管理方法をご紹介するクイックビジュアルガイドです。",
+    hero_cta: "⬇ Spendoraを無料ダウンロード",
+    s1_num: "ステップ 01", s1_title: "ダッシュボードでひと目で確認",
+    s1_desc1: "Spendoraを開いた瞬間、今月の合計支出、平均購入額、年間累計金額が正確にわかります。",
+    s1_desc2: "メニューを探す必要はありません。計算も不要です。重要な数字だけが前面に表示されます。",
+    s2_num: "ステップ 02", s2_title: "カテゴリー別にカタログを作成",
+    s2_desc1: "Spendoraに追加する商品はすべて、パン、飲料、乳製品、日用品などのカテゴリーに分類されます。価格は一度設定すれば、今後のすべてのリストに保存されます。",
+    s2_highlight_label: "重要な理由",
+    s2_highlight_text: "商品をカテゴリー分けすることは、単なる整理整頓のためではありません。買い物リストが単なる項目の羅列ではなく、店内の地図のように機能するための基盤となります。",
+    s3_num: "ステップ 03", s3_title: "混乱ではなく、カテゴリー別に買い物",
+    s3_desc1: "買い物リストを作成し、カタログから必要な商品を選択します。合計見積もり金額は即座に更新されるので、レジに着く前に、支出額を常に把握できます。",
+    s3_highlight_label: "店内での本当のメリット",
+    s3_highlight_text: "商品はすでにカテゴリー別に整理されているため、買い物中にリストをカテゴリーでフィルタリングできます — パン、乳製品、飲料、肉類。これらのカテゴリーは、通常スーパーの実際の売り場に対応しています。カテゴリーを選択すると該当する商品だけが表示されるため、次に何を買うかとリスト全体をスクロールして探す代わりに、売り場ごとに順番に移動できます。",
+    s4_num: "ステップ 04", s4_title: "すべての買い物が自動的に保存",
+    s4_desc1: "リストを確定すると、店舗名、日付、商品数、合計金額とともに購入履歴に保存されます。手動での記録は必要ありません。",
+    s4_desc2: "時間が経つにつれ、この履歴は買い物ごと、店舗ごとに食料品への支出がどのように推移しているかを示す個人的な記録になります。",
+    s5_num: "ステップ 05", s5_title: "お金の使い道を正確に把握",
+    s5_desc1: "Spendoraは購入履歴を、今月、暦年、平均購入額、過去12か月の月次支出傾向といった明確でわかりやすい統計情報に変換します。",
+    s5_desc2: "今月が高かったかどうか推測する必要はもうありません。グラフが瞬時に示してくれます。",
+    s6_num: "ステップ 06", s6_title: "スーパーを比較し、傾向を比較",
+    s6_desc1: "累積支出の推移を確認し、利用している各スーパーに予算のどれだけが使われているかを、店舗ごとの明確な内訳とともに把握できます。",
+    s6_highlight_label: "これを判断材料に",
+    s6_highlight_text: "どの店舗が継続して予算の大きな割合を占めているかがわかれば、それだけの価値があるのか、それとも買い物先を見直す時期なのか、根拠に基づいた判断ができます。",
+    cta_title: '始めるのは簡単。<span class="gold">時間とともに強力に。</span>',
+    cta_sub: "Spendoraを無料でダウンロードして、2分以内に最初の買い物リストの整理を始めましょう。",
+    footer_home: "ホーム", footer_hacks: "Grocery Hacks", footer_privacy: "プライバシーポリシー",
+    footer_copy: "© 2026 Spendora. All rights reserved."
+  },
+  zh: {
+    page_title: "如何使用 Spendora — 食品预算应用指南",
+    meta_desc: "了解如何使用 Spendora——购物清单与预算管理应用。按分类整理商品、创建购物清单并跟踪您的支出。",
+    nav_cta: "免费下载",
+    hero_eyebrow: "使用方法",
+    hero_title: 'Spendora 的全部功能。<span class="gold">简单说明。</span>',
+    hero_sub: "快速图文指南，教您整理商品、创建更智能的购物清单，并使用 Spendora 跟踪您的食品预算。",
+    hero_cta: "⬇ 免费下载 Spendora",
+    s1_num: "步骤 01", s1_title: "一目了然的仪表盘",
+    s1_desc1: "打开 Spendora 的瞬间，您就能清楚地看到自己的状况——本月总支出、每次购物的平均金额，以及累计年度总支出。",
+    s1_desc2: "无需在菜单中查找,无需计算。只有真正重要的数字,清晰呈现在您面前。",
+    s2_num: "步骤 02", s2_title: "按分类建立您的商品目录",
+    s2_desc1: "您添加到 Spendora 的每一件商品都会归入相应分类——面包、饮料、乳制品、家居用品等等。价格只需设置一次,即可保存供以后所有清单使用。",
+    s2_highlight_label: "为什么这很重要",
+    s2_highlight_text: "对商品进行分类不仅仅是为了整理——它是让您的购物清单像商店地图一样运作的基础,而不只是一份随意罗列的商品清单。",
+    s3_num: "步骤 03", s3_title: "按分类购物,告别混乱",
+    s3_desc1: "创建购物清单,并从商品目录中选择所需商品。预估总额会即时更新,让您在到达收银台之前,始终清楚自己即将花费多少。",
+    s3_highlight_label: "购物时的真正优势",
+    s3_highlight_text: "由于您的商品已经按分类整理好,购物时您可以按分类筛选清单——面包、乳制品、饮料、肉类。这些分类通常与超市实际的区域相对应。选择一个分类后,只会显示对应的商品,让您可以按区域逐一购物,而不必翻遍整个清单寻找下一项。",
+    s4_num: "步骤 04", s4_title: "每次购物,自动保存",
+    s4_desc1: "完成清单后,系统会自动保存到您的购买历史中——包括商店、日期、商品数量和总花费。无需手动记录。",
+    s4_desc2: "随着时间推移,这份历史记录将成为您个人的食品支出演变记录——一次购物接一次购物,一家商店接一家商店。",
+    s5_num: "步骤 05", s5_title: "清楚了解您的钱花在哪里",
+    s5_desc1: "Spendora 将您的购买历史转化为清晰直观的统计数据——当月支出、年度支出、平均消费金额,以及过去12个月的月度支出趋势。",
+    s5_desc2: "再也不用猜测这个月是否花费过多。图表即时为您展示答案。",
+    s6_num: "步骤 06", s6_title: "比较超市,比较趋势",
+    s6_desc1: "查看您累计支出随时间的变化,并清楚了解您的预算中有多少花在了每家常去的超市——按商店清晰分类展示。",
+    s6_highlight_label: "用这个来做决定",
+    s6_highlight_text: "一旦您发现某家商店持续占用您预算的较大部分,就可以做出明智的决定——这是否值得,还是该将更多购物转移到别处?",
+    cta_title: '轻松上手。<span class="gold">长久强大。</span>',
+    cta_sub: "免费下载 Spendora,两分钟内即可开始整理您的第一份购物清单。",
+    footer_home: "首页", footer_hacks: "Grocery Hacks", footer_privacy: "隐私政策",
+    footer_copy: "© 2026 Spendora. 保留所有权利。"
+  },
+  ko: {
+    page_title: "Spendora 사용법 — 식료품 예산 앱 가이드",
+    meta_desc: "Spendora 사용법을 알아보세요 — 장보기 목록 및 예산 관리 앱입니다. 카테고리별로 제품을 정리하고, 장보기 목록을 만들고, 지출을 추적하세요.",
+    nav_cta: "무료 다운로드",
+    hero_eyebrow: "사용 방법",
+    hero_title: 'Spendora가 하는 모든 것. <span class="gold">쉽게 설명해 드립니다.</span>',
+    hero_sub: "제품 정리, 더 스마트한 장보기 목록 작성, Spendora로 식료품 예산을 추적하는 방법을 안내하는 빠른 시각 가이드입니다.",
+    hero_cta: "⬇ Spendora 무료 다운로드",
+    s1_num: "1단계", s1_title: "한눈에 보는 대시보드",
+    s1_desc1: "Spendora를 여는 순간, 이번 달 총 지출, 평균 구매 금액, 누적 연간 총액을 정확히 확인할 수 있습니다.",
+    s1_desc2: "메뉴를 뒤질 필요도, 계산할 필요도 없습니다. 중요한 숫자들이 바로 눈앞에 표시됩니다.",
+    s2_num: "2단계", s2_title: "카테고리별로 카탈로그 만들기",
+    s2_desc1: "Spendora에 추가하는 모든 제품은 베이커리, 음료, 유제품, 생활용품 등 카테고리로 정리됩니다. 가격은 한 번만 설정하면 이후 모든 목록에 저장됩니다.",
+    s2_highlight_label: "이것이 중요한 이유",
+    s2_highlight_text: "제품을 카테고리별로 분류하는 것은 단순한 정리가 아닙니다 — 장보기 목록이 임의의 항목 나열이 아니라 매장 지도처럼 작동하게 하는 기반입니다.",
+    s3_num: "3단계", s3_title: "혼란이 아닌 카테고리별 쇼핑",
+    s3_desc1: "장보기 목록을 만들고 카탈로그에서 필요한 제품을 선택하세요. 예상 총액이 즉시 업데이트되어 계산대에 도착하기 전에 얼마를 쓸지 항상 알 수 있습니다.",
+    s3_highlight_label: "매장에서의 진짜 장점",
+    s3_highlight_text: "제품이 이미 카테고리별로 정리되어 있기 때문에 쇼핑하면서 목록을 카테고리별로 필터링할 수 있습니다 — 베이커리, 유제품, 음료, 육류. 이러한 카테고리는 보통 슈퍼마켓의 실제 구역과 일치합니다. 카테고리를 선택하면 해당 항목만 표시되므로, 다음에 살 것을 찾기 위해 전체 목록을 스크롤하는 대신 매장을 구역별로 이동할 수 있습니다.",
+    s4_num: "4단계", s4_title: "모든 쇼핑, 자동 저장",
+    s4_desc1: "목록을 완료하면 매장, 날짜, 제품 수, 총 지출 금액과 함께 구매 내역에 저장됩니다. 수동으로 기록할 필요가 없습니다.",
+    s4_desc2: "시간이 지나면서 이 내역은 쇼핑마다, 매장마다 식료품 지출이 어떻게 변화하는지를 보여주는 개인 기록이 됩니다.",
+    s5_num: "5단계", s5_title: "돈이 어디로 가는지 정확히 확인",
+    s5_desc1: "Spendora는 구매 내역을 이번 달, 연간, 평균 구매 금액, 지난 12개월간의 월별 지출 추이 등 명확한 시각적 통계로 변환합니다.",
+    s5_desc2: "이번 달이 비쌌는지 더 이상 추측할 필요 없습니다. 차트가 즉시 보여줍니다.",
+    s6_num: "6단계", s6_title: "슈퍼마켓 비교, 트렌드 비교",
+    s6_desc1: "시간에 따른 누적 지출 변화를 확인하고, 이용하는 각 슈퍼마켓에 예산의 얼마가 사용되는지 매장별로 명확하게 파악할 수 있습니다.",
+    s6_highlight_label: "이것으로 결정하세요",
+    s6_highlight_text: "어느 매장이 지속적으로 예산의 더 큰 부분을 차지하는지 알게 되면, 그럴 가치가 있는지 아니면 다른 곳으로 쇼핑을 옮길 때인지 정보에 기반한 결정을 내릴 수 있습니다.",
+    cta_title: '시작은 간단하게. <span class="gold">시간이 지날수록 강력하게.</span>',
+    cta_sub: "Spendora를 무료로 다운로드하고 2분 안에 첫 장보기 목록 정리를 시작하세요.",
+    footer_home: "홈", footer_hacks: "Grocery Hacks", footer_privacy: "개인정보처리방침",
+    footer_copy: "© 2026 Spendora. All rights reserved."
+  }
+};
+
+const langNames = { en: "English", pt: "Português", es: "Español", fr: "Français", ja: "日本語", zh: "简体中文", ko: "한국어" };
+
+function applyLang(lang) {
+  const t = translations[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  document.getElementById('pageTitle').textContent = t.page_title;
+  document.getElementById('metaDesc').setAttribute('content', t.meta_desc);
+  document.getElementById('langBtnLabel').textContent = langNames[lang];
+  document.getElementById('htmlRoot').setAttribute('lang', lang);
+  document.body.setAttribute('lang-active', lang);
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  localStorage.setItem('spendora_lang', lang);
+}
+
+document.getElementById('langBtn').addEventListener('click', () => {
+  document.getElementById('langDropdown').classList.toggle('open');
+});
+
+document.querySelectorAll('.lang-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    applyLang(btn.dataset.lang);
+    document.getElementById('langDropdown').classList.remove('open');
+  });
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.lang-switch')) {
+    document.getElementById('langDropdown').classList.remove('open');
+  }
+});
+
+// Detect browser language on first load
+const saved = localStorage.getItem('spendora_lang');
+const browserLang = navigator.language.slice(0,2);
+const initialLang = saved || (translations[browserLang] ? browserLang : 'en');
+applyLang(initialLang);
+</script>
+
+</body>
+</html>
